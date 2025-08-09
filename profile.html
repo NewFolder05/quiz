@@ -1,0 +1,361 @@
+<!-- profile.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Edit Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7ff, #ffffff);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4a6cf7, #667eea);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .header h1 {
+            font-size: clamp(20px, 4vw, 28px);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .logout-btn {
+            background: white;
+            color: #4a6cf7;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: clamp(14px, 2vw, 16px);
+        }
+        
+        .dashboard {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+        }
+        
+        .sidebar {
+            width: 100%;
+            background: white;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .sidebar ul {
+            list-style: none;
+            display: flex;
+            overflow-x: auto;
+            gap: 10px;
+            padding-bottom: 5px;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .sidebar li {
+            flex: 0 0 auto;
+        }
+        
+        .sidebar a {
+            text-decoration: none;
+            color: #495057;
+            font-size: clamp(14px, 2vw, 16px);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 15px;
+            border-radius: 10px;
+            white-space: nowrap;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            background: white;
+        }
+        
+        .profile-form {
+            background: #ffffff;
+            padding: clamp(20px, 5vw, 40px);
+            border-radius: 20px;
+            max-width: min(90%, 600px);
+            margin: 0 auto;
+            box-shadow: 0 10px 30px rgba(74,108,247,0.1);
+        }
+
+        .photo-container {
+            width: clamp(100px, 30vw, 150px);
+            height: clamp(100px, 30vw, 150px);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: clamp(10px, 3vw, 15px) 45px;
+            font-size: clamp(14px, 2vw, 16px);
+        }
+
+        @media (min-width: 768px) {
+            .dashboard {
+                flex-direction: row;
+            }
+            
+            .sidebar {
+                width: 250px;
+                border-right: 1px solid #e9ecef;
+                padding: 30px 20px;
+            }
+            
+            .sidebar ul {
+                flex-direction: column;
+                overflow: visible;
+            }
+            
+            .sidebar li {
+                margin-bottom: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 10px;
+            }
+            
+            .profile-form {
+                padding: 15px;
+            }
+            
+            .form-group {
+                margin-bottom: 15px;
+            }
+            
+            .upload-btn {
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+            
+            .submit-btn {
+                padding: 12px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Rest of the HTML remains the same -->
+    <header class="header">
+        <h1><i class="fas fa-dashboard"></i> Admin Dashboard</h1>
+        <button class="logout-btn" onclick="alert('Logged out')"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </header>
+    
+    <div class="dashboard">
+        <nav class="sidebar">
+            <ul>
+                <li><a href="dashboard.html"><i class="fas fa-users"></i> Manage Users</a></li>
+                <li><a href="events.html"><i class="fas fa-calendar-alt"></i> Manage Events</a></li>
+                <li><a href="questions.html"><i class="fas fa-question-circle"></i> Manage Questions</a></li>
+                <li><a href="analytics.html"><i class="fas fa-chart-bar"></i> View Analytics</a></li>
+                <li><a href="profile.html" class="active"><i class="fas fa-user-edit"></i> Edit Profile</a></li>
+            </ul>
+        </nav>
+        
+        <main class="main-content">
+            <h2>Edit Profile</h2>
+<style>
+.profile-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.profile-photo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.photo-container {
+    position: relative;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid #4a6cf7;
+}
+
+.photo-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.photo-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+    cursor: pointer;
+}
+
+.photo-overlay i {
+    color: white;
+    font-size: 24px;
+}
+
+.photo-container:hover .photo-overlay {
+    opacity: 1;
+}
+
+.upload-btn {
+    background: #4a6cf7;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.3s;
+}
+
+.upload-btn:hover {
+    background: #3451b2;
+}
+
+.form-group {
+    position: relative;
+}
+
+.input-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #4a6cf7;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    background: #f8f9fa;
+    transition: all 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #4a6cf7;
+    box-shadow: 0 0 0 3px rgba(74,108,247,0.1);
+    outline: none;
+}
+
+.submit-btn {
+    background: #4a6cf7;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.submit-btn:hover {
+    background: #3451b2;
+    transform: translateY(-2px);
+}
+
+.submit-btn i {
+    margin-right: 8px;
+}
+</style>
+
+<form id="edit-profile-form" class="profile-form">
+    <!-- Form content remains the same -->
+    <div class="profile-photo">
+        <div class="photo-container">
+            <img src="https://via.placeholder.com/150" alt="Profile Picture">
+            <div class="photo-overlay">
+                <i class="fas fa-camera"></i>
+            </div>
+        </div>
+        <button type="button" class="upload-btn">
+            <i class="fas fa-upload"></i> Upload New Photo
+        </button>
+    </div>
+    <div class="form-group">
+        <input type="text" placeholder="Full Name" value="Admin User" required>
+        <i class="fas fa-user input-icon"></i>
+    </div>
+    <div class="form-group">
+        <input type="text" placeholder="Username" value="admin" required>
+        <i class="fas fa-at input-icon"></i>
+    </div>
+    <div class="form-group">
+        <input type="email" placeholder="Email" value="admin@example.com" required>
+        <i class="fas fa-envelope input-icon"></i>
+    </div>
+    <div class="form-group">
+        <input type="password" placeholder="New Password">
+        <i class="fas fa-lock input-icon"></i>
+    </div>
+    <div class="form-group">
+        <input type="password" placeholder="Confirm Password">
+        <i class="fas fa-lock input-icon"></i>
+    </div>
+    <div class="form-group">
+        <select>
+            <option value="admin">Role: Admin</option>
+        </select>
+        <i class="fas fa-user-shield input-icon"></i>
+    </div>
+    <div class="form-group">
+        <textarea placeholder="Bio" rows="4">Admin of Quiz Platform</textarea>
+        <i class="fas fa-pen input-icon"></i>
+    </div>
+    <button type="submit" class="submit-btn">
+        <i class="fas fa-save"></i> Save Changes
+    </button>
+</form>
+</main>
+    </div>
+
+    <script>
+        document.getElementById('edit-profile-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Profile updated successfully!');
+        });
+    </script>
+</body>
+</html>

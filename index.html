@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: #4a6cf7;
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .right-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        .login-btn {
+            background-color: white;
+            color: #4a6cf7;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .login-btn:hover {
+            background-color: #f0f0f0;
+            transform: translateY(-2px);
+        }
+
+        /* Mobile menu button */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .right-section {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: -100%;
+                width: 100%;
+                background-color: #4a6cf7;
+                padding: 20px;
+                flex-direction: column;
+                align-items: center;
+                transition: left 0.3s ease-in-out;
+            }
+
+            .right-section.active {
+                display: flex;
+                left: 0;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
+            }
+
+            .nav-links a {
+                width: 100%;
+                text-align: center;
+                padding: 10px 0;
+            }
+
+            .nav-links a i {
+                font-size: 20px;
+                margin-right: 10px;
+            }
+
+            .login-btn {
+                width: 100%;
+                justify-content: center;
+                margin-top: 10px;
+            }
+        }
+
+        /* Add padding to body to account for fixed header */
+        body {
+            padding-top: 80px;
+        }
+
+        /* Rest of your existing styles... */
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <span class="quiz">New</span><span class="master">Folder5</span>
+            </div>
+            <button class="mobile-menu-btn">☰</button>
+            <div class="right-section">
+                <nav class="nav-links">
+                    <a href="#" class="nav-item">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                    <a href="leaderdash.html" class="nav-item">
+                        <i class="fas fa-trophy"></i>
+                        <span>Leaderboard</span>
+                    </a>
+                    <a href="#about" class="nav-item">
+
+                        <i class="fas fa-info-circle"></i>
+                        <span>About</span>
+                    </a>
+                       <a href="#contact" class="nav-item">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Contact</span>
+                    </a>
+                </nav>
+                <button class="login-btn" id="loginBtn" onclick="toggleLoginForm()">
+                    <i class="fas fa-user"></i>
+                    Login
+                </button>
+                
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container hero-section">
+            <div class="hero-content">
+                <h1 class="animated-title">Welcome to the Ultimate Quiz Experience</h1>
+                <p class="hero-description">Challenge yourself, compete with friends, and become a quiz master!</p>
+                <div class="button-group">
+                    <a href="start.html" class="cta-button primary-btn">
+                        <i class="fas fa-play-circle"></i>
+                        Start Quiz
+                    </a>
+                    <a href="questions.html" class="cta-button secondary-btn">
+                        <i class="fas fa-list-ul"></i>
+                        Browse Questions
+                    </a>
+                </div>
+
+                <style>
+                    .cta-button {
+                        text-decoration: none;
+                        padding: 15px 35px;
+                        font-size: 1.2em;
+                        border-radius: 30px;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 10px;
+                        font-weight: 600;
+                    }
+
+                    .primary-btn {
+                        background: white;
+                        color: #4a6cf7;
+                        border: none;
+                    }
+
+                    .secondary-btn {
+                        background: rgba(255,255,255,0.1);
+                        color: white;
+                        border: 2px solid white;
+                    }
+
+                    .cta-button:hover {
+                        transform: translateY(-5px);
+                        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+                    }
+
+                    .primary-btn:hover {
+                        background: #f0f0f0;
+                    }
+
+                    .secondary-btn:hover {
+                        background: rgba(255,255,255,0.2);
+                    }
+                </style>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">1000+</span>
+                        <span class="stat-label">Questions</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">50K+</span>
+                        <span class="stat-label">Users</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">100+</span>
+                        <span class="stat-label">Topics</span>
+                    </div>
+                </div>
+            </div>
+            <style>
+                .hero-section {
+                    text-align: center;
+                    padding: 80px 20px;
+                    background: linear-gradient(135deg, #6e8efb, #4a6cf7);
+                    color: white;
+                    border-radius: 20px;
+                    margin-top: 30px;
+                    position: relative;
+                    overflow: hidden;
+                }
+
+                .hero-section::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="white" fill-opacity="0.05"/></svg>') center/50% no-repeat;
+                    animation: pulse 3s infinite;
+                }
+
+                @keyframes pulse {
+                    0% { transform: scale(1); opacity: 0.5; }
+                    50% { transform: scale(1.2); opacity: 0.3; }
+                    100% { transform: scale(1); opacity: 0.5; }
+                }
+
+                .animated-title {
+                    font-size: 3em;
+                    margin-bottom: 20px;
+                    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+                    animation: slideIn 0.8s ease-out;
+                }
+
+                .hero-description {
+                    font-size: 1.4em;
+                    margin-bottom: 40px;
+                    opacity: 0.9;
+                }
+
+                .button-group {
+                    display: flex;
+                    gap: 20px;
+                    justify-content: center;
+                    margin-bottom: 50px;
+                }
+
+                .cta-button {
+                    padding: 15px 35px;
+                    font-size: 1.2em;
+                    border-radius: 30px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    font-weight: 600;
+                }
+
+                .primary-btn {
+                    background: white;
+                    color: #4a6cf7;
+                    border: none;
+                }
+
+                .secondary-btn {
+                    background: rgba(255,255,255,0.1);
+                    color: white;
+                    border: 2px solid white;
+                }
+
+                .cta-button:hover {
+                    transform: translateY(-3px);
+                    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+                }
+
+                .hero-stats {
+                    display: flex;
+                    justify-content: center;
+                    gap: 50px;
+                    margin-top: 40px;
+                }
+
+                .stat-item {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                }
+
+                .stat-number {
+                    font-size: 2em;
+                    font-weight: bold;
+                    margin-bottom: 5px;
+                }
+
+                .stat-label {
+                    font-size: 1em;
+                    opacity: 0.8;
+                }
+
+                @keyframes slideIn {
+                    from {
+                        opacity: 0;
+                        transform: translateY(-20px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+
+                @media (max-width: 768px) {
+                    .hero-section {
+                        padding: 60px 15px;
+                    }
+
+                    .animated-title {
+                        font-size: 2em;
+                    }
+
+                    .button-group {
+                        flex-direction: column;
+                        gap: 15px;
+                    }
+
+                    .hero-stats {
+                        flex-direction: column;
+                        gap: 30px;
+                    }
+                }
+            </style>
+        </div>
+    </main>
+    <section id="about">
+        <div class="container about-section">
+            <h2>About Us</h2>
+            <p>We are a community of quiz enthusiasts who love to test our knowledge and challenge each other. Our platform offers a wide range of quizzes on various topics, including science, history, geography, and more. Whether you're a beginner or an experienced quizzer, we have something for everyone.</p>
+            <div class="features">
+                <div class="feature-card">
+                    <i class="fas fa-brain"></i>
+                    <h3>Learn</h3>
+                    <p>Expand your knowledge</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-users"></i>
+                    <h3>Compete</h3>
+                    <p>Challenge your friends</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Grow</h3>
+                    <p>Track your progress</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <style>
+        .hero-section {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #6e8efb, #4a6cf7);
+            color: white;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        .hero-section h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .hero-section p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+
+        .cta-button {
+            padding: 15px 30px;
+            font-size: 1.1em;
+            background-color: white;
+            color: #4a6cf7;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .about-section {
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .about-section h2 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+
+        .about-section p {
+            color: #666;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto 40px;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .feature-card {
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-card i {
+            font-size: 2em;
+            color: #4a6cf7;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .feature-card p {
+            color: #666;
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 40px 20px;
+            }
+
+            .hero-section h1 {
+                font-size: 2em;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+    <script>
+        function startQuiz() {
+            // Add animation to button
+            const button = document.querySelector('.cta-button');
+            button.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                button.style.transform = 'scale(1)';
+            }, 200);
+
+            // Placeholder for quiz start functionality
+            console.log('Starting quiz...');
+            // Add your quiz initialization logic here
+        }
+
+        // Animate feature cards on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.feature-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.5s, transform 0.5s';
+            observer.observe(card);
+        });
+    </script>
+
+
+    <section id="contact">
+        <div class="container contact-section">
+            <h2>Contact Us</h2>
+            <p>Have any questions or feedback? We'd love to hear from you! Contact us using the form below or through our social media channels.</p>
+            <form>
+                <input type="text" placeholder="Your Name" required>
+                <input type="email" placeholder="Your Email" required>
+                <textarea placeholder="Your Message" required></textarea>
+                <button type="submit">Send Message</button>
+            </form>
+        </div>
+        <style>
+            .contact-section {
+                padding: 60px 20px;
+                text-align: center;
+                background: #fff;
+                border-radius: 15px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+                margin: 40px auto;
+            }
+
+            .contact-section h2 {
+                color: #333;
+                margin-bottom: 20px;
+                font-size: 2em;
+            }
+
+            .contact-section p {
+                color: #666;
+                margin-bottom: 30px;
+                max-width: 600px;
+                margin-left: auto;
+                margin-right: auto;
+                line-height: 1.6;
+            }
+
+            .contact-section form {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+                max-width: 500px;
+                margin: 0 auto;
+            }
+
+            .contact-section input,
+            .contact-section textarea {
+                padding: 12px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                font-size: 1em;
+                transition: border-color 0.3s;
+            }
+
+            .contact-section textarea {
+                min-height: 150px;
+                resize: vertical;
+            }
+
+            .contact-section input:focus,
+            .contact-section textarea:focus {
+                outline: none;
+                border-color: #4a6cf7;
+            }
+
+            .contact-section button {
+                background: #4a6cf7;
+                color: white;
+                padding: 12px 30px;
+                border: none;
+                border-radius: 25px;
+                font-size: 1.1em;
+                cursor: pointer;
+                transition: transform 0.3s, background-color 0.3s;
+                margin-top: 10px;
+            }
+
+            .contact-section button:hover {
+                transform: translateY(-2px);
+                background: #3857d6;
+            }
+
+            @media (max-width: 768px) {
+                .contact-section {
+                    padding: 40px 15px;
+                    margin: 20px auto;
+                }
+
+                .contact-section form {
+                    padding: 0 15px;
+                }
+            }
+        </style>
+    </section>
+<footer>
+    <div class="container footer-content">
+        <!-- Left Section -->
+        <div class="footer-info">
+            <h3>NewFolder5</h3>
+            <p>&copy; 2025 Developed by NewFolder5. All rights reserved.</p>
+            <div class="contact-details">
+                <p><i class="bi bi-telephone-fill"></i> +1 234 567 8900</p>
+                <p><i class="bi bi-envelope-fill"></i> contact@newfolder5.com</p>
+                <p><i class="bi bi-geo-alt-fill"></i> 123 Quiz Street, Knowledge City</p>
+            </div>
+        </div>
+        
+
+        <!-- Right Section -->
+        <div class="social-links">
+            <a href="https://instagram.com/newfolder5" target="_blank" class="social-icon">
+                <i class="bi bi-instagram"></i>
+            </a>
+            <a href="https://website.com" target="_blank" class="social-icon">
+                <i class="bi bi-globe"></i>
+            </a>
+            <a href="#" target="_blank" class="social-icon">
+                <i class="bi bi-facebook"></i>
+            </a>
+            <a href="#" target="_blank" class="social-icon">
+                <i class="bi bi-twitter"></i>
+            </a>
+        </div>
+<!-- Back to top button -->
+<button id="backToTop" class="back-to-top" onclick="scrollToTop()">
+    <i class="bi bi-arrow-up"></i>
+</button>
+
+<style>
+    .back-to-top {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 50px;
+        height: 50px;
+        background: #4a6cf7;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+        z-index: 1000;
+    }
+
+    .back-to-top:hover {
+        background: #3857d6;
+        transform: translateY(-3px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    .back-to-top.show {
+        display: flex;
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+</style>
+
+<script>
+    // Show/hide back to top button based on scroll position
+    window.onscroll = function() {
+        const button = document.getElementById('backToTop');
+        if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+            button.classList.add('show');
+        } else {
+            button.classList.remove('show');
+        }
+    };
+
+    // Smooth scroll to top
+    function scrollToTop() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
+</script>
+    </div>
+</footer>
+
+<style>
+    footer {
+        background: linear-gradient(135deg, #4a6cf7, #2c3e50);
+        color: white;
+        padding: 60px 0;
+        margin-top: 50px;
+        font-family: 'Segoe UI', sans-serif;
+        box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+    }
+
+    .footer-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        max-width: 1100px;
+        margin: auto;
+        padding: 0 20px;
+    }
+
+    .footer-info {
+        flex: 1;
+        min-width: 300px;
+        margin-right: 40px;
+    }
+
+    .footer-info h3 {
+        font-size: 28px;
+        margin-bottom: 20px;
+        border-bottom: 3px solid #4a6cf7;
+        display: inline-block;
+        padding-bottom: 8px;
+        color: #fff;
+    }
+
+    .contact-details {
+        margin-top: 25px;
+    }
+
+    .contact-details p {
+        margin: 15px 0;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        font-size: 16px;
+        opacity: 0.9;
+        transition: opacity 0.3s ease;
+    }
+
+    .contact-details p:hover {
+        opacity: 1;
+    }
+
+    .contact-details i {
+        font-size: 20px;
+        color: #4a6cf7;
+    }
+
+    .social-links {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        padding: 20px 0;
+    }
+
+    .social-icon {
+        color: white;
+        font-size: 24px;
+        width: 50px;
+        height: 50px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .social-icon:hover {
+        transform: translateY(-5px);
+        background: #4a6cf7;
+        color: white;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    @media (max-width: 768px) {
+        .footer-content {
+            flex-direction: column;
+            text-align: center;
+            gap: 30px;
+        }
+
+        .footer-info {
+            margin-right: 0;
+        }
+
+        .contact-details p {
+            justify-content: center;
+        }
+
+        .social-links {
+            justify-content: center;
+            margin-top: 30px;
+        }
+    }
+</style>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+
+<!-- Login -->
+<div id="loginForm" class="login-form">
+    <div class="login-form-content">
+        <h2>Login</h2>
+
+        <p class="login-subtitle">Please login to your account</p>
+        <form onsubmit="handleLogin(event)">
+            <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="email" placeholder="Email" required>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="password" placeholder="Password" required>
+            </div>
+            <div class="form-footer">
+               
+                <a href="#" onclick="toggleForgotPassword()" class="forgot-password">Forgot Password?</a>
+            </div>
+            <button type="submit" class="login-btn">
+                <span>Login</span>
+                <i class="fas fa-arrow-right"></i>
+            </button>
+        </form>
+        <button class="close-btn" onclick="toggleLoginForm()">×</button>
+    </div>
+</div>
+
+<!-- Forgot Password Form -->
+<div id="forgotPasswordForm" class="login-form">
+    <div class="login-form-content">
+        <h2>Reset Password</h2>
+        <p class="login-subtitle">Enter your email to reset password</p>
+        <form onsubmit="handleForgotPassword(event)">
+            <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="resetEmail" placeholder="Email" required>
+            </div>
+            <button type="submit" class="login-btn">
+                <span>Send Reset Link</span>
+                <i class="fas fa-paper-plane"></i>
+            </button>
+            <button type="button" class="back-btn" onclick="toggleForgotPassword()">
+                <i class="fas fa-arrow-left"></i>
+                <span>Back to Login</span>
+            </button>
+        </form>
+        <button class="close-btn" onclick="toggleForgotPassword()">×</button>
+    </div>
+</div>
+
+<style>
+    .login-form {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 1001;
+        justify-content: center;
+        align-items: center;
+        backdrop-filter: blur(5px);
+    }
+
+    .login-form.active {
+        display: flex;
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    .login-form-content {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        position: relative;
+        width: 90%;
+        max-width: 400px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    .login-form h2 {
+        margin-bottom: 10px;
+        color: #333;
+        font-size: 28px;
+        text-align: center;
+    }
+
+    .login-subtitle {
+        color: #666;
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 14px;
+    }
+
+    .input-group {
+        position: relative;
+        margin-bottom: 20px;
+    }
+
+    .input-group i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #4a6cf7;
+    }
+
+    .login-form input {
+        width: 100%;
+        padding: 15px 15px 15px 45px;
+        border: 2px solid #eee;
+        border-radius: 10px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
+
+    .login-form input:focus {
+        border-color: #4a6cf7;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.1);
+    }
+
+    .form-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .remember-me {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #666;
+        font-size: 14px;
+    }
+
+    .forgot-password {
+        color: #4a6cf7;
+        text-decoration: none;
+        font-size: 14px;
+        transition: color 0.3s;
+    }
+
+    .forgot-password:hover {
+        color: #3857d6;
+    }
+
+    .login-btn, .back-btn {
+        width: 100%;
+        padding: 15px;
+        background: #4a6cf7;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .login-btn:hover {
+        background: #3857d6;
+        transform: translateY(-2px);
+    }
+
+    .back-btn {
+        background: #f5f5f5;
+        color: #333;
+        margin-top: 15px;
+    }
+
+    .back-btn:hover {
+        background: #eee;
+    }
+
+    .close-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: #f5f5f5;
+        border: none;
+        font-size: 20px;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        cursor: pointer;
+        color: #333;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+    .close-btn:hover {
+        background: #eee;
+        transform: rotate(90deg);
+    }
+</style>
+
+<script>
+    function toggleLoginForm() {
+        const loginForm = document.getElementById('loginForm');
+        const forgotForm = document.getElementById('forgotPasswordForm');
+        loginForm.classList.toggle('active');
+        forgotForm.classList.remove('active');
+    }
+
+    function toggleForgotPassword() {
+        const loginForm = document.getElementById('loginForm');
+        const forgotForm = document.getElementById('forgotPasswordForm');
+        loginForm.classList.toggle('active');
+        forgotForm.classList.toggle('active');
+    }
+
+    function handleLogin(event) {
+        event.preventDefault();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const remember = document.getElementById('remember').checked;
+        
+        // Add your login logic here
+        console.log('Login attempt:', { email, password, remember });
+        
+        // Close the form after submission
+        toggleLoginForm();
+    }
+
+    function handleForgotPassword(event) {
+        event.preventDefault();
+        const email = document.getElementById('resetEmail').value;
+        
+        // Add your password reset logic here
+        console.log('Password reset requested for:', email);
+        
+        // Show success message (you can customize this)
+        alert('Password reset link has been sent to your email');
+        
+        // Close the form after submission
+        toggleForgotPassword();
+    }
+</script>
+    <!-- Rest of your existing HTML... -->
+
+    <script>
+        // Add mobile menu functionality
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const rightSection = document.querySelector('.right-section');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            rightSection.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.header-content')) {
+                rightSection.classList.remove('active');
+            }
+        });
+
+        // Rest of your existing JavaScript...
+    </script>
+</body>
+</html>

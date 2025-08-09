@@ -1,0 +1,160 @@
+ header {
+            background-color: #4a6cf7;
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .right-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        .login-btn {
+            background-color: white;
+            color: #4a6cf7;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .login-btn:hover {
+            background-color: #f0f0f0;
+            transform: translateY(-2px);
+        }
+
+        /* Mobile menu button */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .right-section {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: -100%;
+                width: 100%;
+                background-color: #4a6cf7;
+                padding: 20px;
+                flex-direction: column;
+                align-items: center;
+                transition: left 0.3s ease-in-out;
+            }
+
+            .right-section.active {
+                display: flex;
+                left: 0;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
+            }
+
+            .nav-links a {
+                width: 100%;
+                text-align: center;
+                padding: 10px 0;
+            }
+
+            .nav-links a i {
+                font-size: 20px;
+                margin-right: 10px;
+            }
+
+            .login-btn {
+                width: 100%;
+                justify-content: center;
+                margin-top: 10px;
+            }
+        }
+
+
+        <header>
+        <div class="container header-content">
+            <div class="logo">
+                <span class="quiz">New</span><span class="master">Folder5</span>
+            </div>
+            <button class="mobile-menu-btn">☰</button>
+            <div class="right-section">
+                <nav class="nav-links">
+                    <a href="#" class="nav-item">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                    <a href="leaderdash.html" class="nav-item">
+                        <i class="fas fa-trophy"></i>
+                        <span>Leaderboard</span>
+                    </a>
+                    <a href="#about" class="nav-item">
+
+                        <i class="fas fa-info-circle"></i>
+                        <span>About</span>
+                    </a>
+                       <a href="#contact" class="nav-item">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Contact</span>
+                    </a>
+                </nav>
+                <button class="login-btn" id="loginBtn" onclick="toggleLoginForm()">
+                    <i class="fas fa-user"></i>
+                    Login
+                </button>
+                
+            </div>
+        </div>
+    </header>

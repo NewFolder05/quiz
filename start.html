@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enhanced Examination Platform</title>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: white;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .header {
+        background: #4a6cf7;
+        backdrop-filter: blur(10px);
+        padding: 15px 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .header-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+    
+    .header h1 {
+        color: white;
+        font-size: 24px;
+        font-weight: 600;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        flex: 1;
+        min-width: 250px;
+    }
+    
+    .main-container {
+        flex: 1;
+        max-width: 1400px;
+        margin: 20px auto;
+        padding: 0 20px;
+        display: flex;
+        justify-content: center;
+    }
+    
+    .question-section {
+        width: 100%;
+        max-width: 800px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .question-number {
+        font-size: 22px;
+        font-weight: 700;
+        color: #4a6cf7;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #4a6cf7;
+        display: inline-block;
+    }
+    
+    .question-text {
+        font-size: 18px;
+        color: #333;
+        margin-bottom: 25px;
+        line-height: 1.6;
+        font-weight: 500;
+    }
+    
+    .options {
+        margin-bottom: 30px;
+    }
+    
+    .options label {
+        display: block;
+        padding: 15px 20px;
+        margin-bottom: 12px;
+        cursor: pointer;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #f8f9ff 0%, #e8f0ff 100%);
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+        font-size: 16px;
+        font-weight: 500;
+        color: #555;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .options label:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(74, 108, 247, 0.1), transparent);
+        transition: left 0.5s;
+    }
+    
+    .options label:hover {
+        border-color: #4a6cf7;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(74, 108, 247, 0.2);
+    }
+    
+    .options label:hover:before {
+        left: 100%;
+    }
+    
+    .options input[type="radio"] {
+        margin-right: 12px;
+        transform: scale(1.2);
+        accent-color: #4a6cf7;
+    }
+    
+    .options label:has(input:checked) {
+        background: linear-gradient(135deg, #4a6cf7 0%, #667eea 100%);
+        color: white;
+        border-color: #4a6cf7;
+        box-shadow: 0 8px 25px rgba(74, 108, 247, 0.3);
+    }
+    
+    .btn-group {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+    
+    button {
+        padding: 12px 25px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    button:before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: width 0.3s, height 0.3s;
+    }
+    
+    button:hover:before {
+        width: 300px;
+        height: 300px;
+    }
+    
+    .prev-btn { 
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%); 
+        color: white; 
+    }
+    .next-btn { 
+        background: linear-gradient(135deg, #4a6cf7 0%, #667eea 100%); 
+        color: white; 
+    }
+    .mark-btn { 
+        background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%); 
+        color: #333; 
+    }
+    
+    button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .sidebar {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 20px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 10px 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        height: auto;
+        min-width: auto;
+        max-width: none;
+        overflow-x: auto;
+    }
+    
+    .timer {
+        font-size: 20px;
+        font-weight: 700;
+        text-align: center;
+        color: #4a6cf7;
+        background: linear-gradient(135deg, #f8f9ff 0%, #e8f0ff 100%);
+        padding: 12px;
+        border-radius: 12px;
+        border: 2px solid #4a6cf7;
+        text-shadow: 0 2px 4px rgba(74, 108, 247, 0.1);
+        margin-bottom: 0;
+        white-space: nowrap;
+    }
+    
+    #attempt-info {
+        font-size: 14px;
+        font-weight: 600;
+        text-align: center;
+        color: #555;
+        background: rgba(74, 108, 247, 0.1);
+        padding: 8px;
+        border-radius: 8px;
+        margin-bottom: 0;
+        white-space: nowrap;
+    }
+    
+    .sidebar h4 {
+        font-size: 16px;
+        font-weight: 700;
+        color: #4a6cf7;
+        text-align: center;
+        margin-bottom: 0;
+        white-space: nowrap;
+    }
+    
+    .question-palette {
+        display: flex;
+        flex-direction: row;
+        gap: 6px;
+        margin-bottom: 0;
+        flex-wrap: nowrap;
+    }
+    
+    .q-btn {
+        width: 35px;
+        height: 35px;
+        border-radius: 8px;
+        border: 2px solid transparent;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 12px;
+        color: white;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+    
+    .legend {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        margin-top: 0;
+        flex-wrap: wrap;
+    }
+    
+    .legend-item {
+        display: flex;
+        align-items: center;
+        font-size: 11px;
+        color: #666;
+        white-space: nowrap;
+    }
+    
+    .legend-color {
+        width: 16px;
+        height: 16px;
+        border-radius: 4px;
+        margin-right: 6px;
+    }
+    
+    .footer {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        padding: 20px 30px;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        text-align: center;
+        color: white;
+    }
+    
+    .footer-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    
+    .footer-left {
+        font-size: 14px;
+        opacity: 0.9;
+    }
+    
+    .footer-right {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+    }
+    
+    .submit-btn {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .q-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    }
+    
+    .not-visited { 
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%); 
+    }
+    .visited { 
+        background: linear-gradient(135deg, #4a6cf7 0%, #667eea 100%); 
+    }
+    .answered { 
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%); 
+    }
+    .marked { 
+        background: linear-gradient(135deg, #fd7e14 0%, #ffc107 100%); 
+    }
+    
+    /* Popup Modal Styles */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(5px);
+    }
+    
+    .modal-content {
+        background: linear-gradient(135deg, #fff 0%, #f8f9ff 100%);
+        margin: 10% auto;
+        padding: 30px;
+        border-radius: 20px;
+        width: 90%;
+        max-width: 500px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        border: 2px solid #4a6cf7;
+        text-align: center;
+        position: relative;
+        animation: modalSlideIn 0.3s ease-out;
+    }
+    
+    @keyframes modalSlideIn {
+        from {
+            transform: translateY(-50px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+    
+    .modal-header {
+        font-size: 24px;
+        font-weight: 700;
+        color: #4a6cf7;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+    
+    .modal-body {
+        font-size: 16px;
+        color: #555;
+        line-height: 1.6;
+        margin-bottom: 25px;
+    }
+    
+    .modal-summary {
+        background: rgba(74, 108, 247, 0.1);
+        padding: 20px;
+        border-radius: 12px;
+        margin: 20px 0;
+        border-left: 4px solid #4a6cf7;
+    }
+    
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        font-weight: 600;
+    }
+    
+    .modal-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .modal-btn {
+        padding: 12px 25px;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        min-width: 120px;
+    }
+    
+    .confirm-btn {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+    }
+    
+    .cancel-btn {
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        color: white;
+    }
+    
+    .modal-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    @media (max-width: 768px) {
+        .header-content {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .header h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 20px;
+            width: 100%;
+        }
+        
+        .sidebar {
+            flex-direction: row;
+            flex-wrap: wrap;
+            padding: 10px;
+            gap: 10px;
+            overflow-x: auto;
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .timer {
+            font-size: 16px;
+            padding: 8px;
+        }
+        
+        #attempt-info {
+            font-size: 12px;
+            padding: 6px;
+        }
+        
+        .sidebar h4 {
+            font-size: 14px;
+        }
+        
+        .question-palette {
+            gap: 4px;
+        }
+        
+        .q-btn {
+            width: 30px;
+            height: 30px;
+            font-size: 11px;
+        }
+        
+        .legend {
+            gap: 6px;
+            justify-content: center;
+            font-size: 10px;
+        }
+        
+        .legend-item {
+            font-size: 10px;
+        }
+        
+        .legend-color {
+            width: 12px;
+            height: 12px;
+        }
+        
+        .main-container {
+            padding: 0 15px;
+        }
+        
+        .question-section {
+            padding: 20px;
+            max-width: 100%;
+        }
+        
+        .question-number {
+            font-size: 18px;
+        }
+        
+        .question-text {
+            font-size: 16px;
+        }
+        
+        .options label {
+            padding: 12px 15px;
+            font-size: 14px;
+        }
+        
+        .btn-group {
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .btn-group button {
+            flex: 1 1 45%;
+            min-width: 0;
+            padding: 10px 15px;
+            font-size: 14px;
+        }
+        
+        .footer-content {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .modal-content {
+            margin: 5% auto;
+            padding: 20px;
+            width: 95%;
+        }
+        
+        .modal-header {
+            font-size: 20px;
+        }
+        
+        .modal-body {
+            font-size: 14px;
+        }
+        
+        .modal-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .modal-btn {
+            width: 100%;
+            max-width: 200px;
+            padding: 10px 20px;
+            font-size: 14px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .header {
+            padding: 10px 15px;
+        }
+        
+        .header h1 {
+            font-size: 18px;
+        }
+        
+        .sidebar {
+            gap: 8px;
+            padding: 8px;
+        }
+        
+        .timer {
+            font-size: 14px;
+            padding: 6px;
+        }
+        
+        #attempt-info {
+            font-size: 10px;
+            padding: 4px;
+        }
+        
+        .sidebar h4 {
+            font-size: 12px;
+        }
+        
+        .q-btn {
+            width: 25px;
+            height: 25px;
+            font-size: 10px;
+        }
+        
+        .legend-item {
+            font-size: 9px;
+        }
+        
+        .legend-color {
+            width: 10px;
+            height: 10px;
+        }
+        
+        .question-section {
+            padding: 15px;
+        }
+        
+        .question-number {
+            font-size: 16px;
+        }
+        
+        .question-text {
+            font-size: 14px;
+        }
+        
+        .options label {
+            padding: 10px 15px;
+            font-size: 12px;
+        }
+        
+        .btn-group button {
+            flex: 1 1 100%;
+            padding: 10px;
+            font-size: 12px;
+        }
+        
+        .footer {
+            padding: 15px 20px;
+        }
+        
+        .footer-left, .footer-right span {
+            font-size: 12px;
+        }
+    }
+</style>
+</head>
+<body>
+
+<div class="header">
+    <div class="header-content">
+        <h1>NewFolder5</h1>
+        <div class="sidebar">
+            <div class="timer" id="timer">⏱️ 00:00</div>
+            <div id="attempt-info">Attempted: 0 / <span id="total-q"></span></div>
+            
+            <h4>📋 Question Palette</h4>
+            <div class="question-palette" id="question-palette"></div>
+            
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color not-visited"></div>
+                    Not Visited
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color visited"></div>
+                    Visited
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color answered"></div>
+                    Answered
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color marked"></div>
+                    Marked
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="main-container">
+    <div class="question-section">
+        <div class="question-number" id="question-number"></div>
+        <div class="question-text" id="question-text"></div>
+        <div class="options" id="options"></div>
+
+        <div class="btn-group">
+            <button class="prev-btn" onclick="prevQuestion()">← Previous</button>
+            <button class="next-btn" onclick="nextQuestion()">Next →</button>
+            <button class="mark-btn" onclick="markForReview()">🔖 Mark for Review</button>
+            <button class="submit-btn" onclick="submitExam()">🎯 Submit Exam</button>
+        </div>
+    </div>
+</div>
+
+<div class="footer">
+    <div class="footer-content">
+        <div class="footer-left">
+            © 2025 Enhanced Examination Platform | Secure • Reliable • User-Friendly
+        </div>
+        <div class="footer-right">
+            <span>Need Help? Contact Support</span>
+        </div>
+    </div>
+</div>
+
+<!-- Submission Modal -->
+<div id="submitModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            🎯 Submit Examination
+        </div>
+        <div class="modal-body">
+            <p>You are about to submit your examination. Please review your answers before final submission.</p>
+            <div class="modal-summary" id="examSummary">
+                <!-- Summary will be populated by JavaScript -->
+            </div>
+            <p><strong>Note:</strong> Once submitted, you cannot make any changes to your answers.</p>
+        </div>
+        <div class="modal-buttons">
+            <button class="modal-btn cancel-btn" onclick="closeSubmitModal()">❌ Cancel</button>
+            <button class="modal-btn confirm-btn" onclick="confirmSubmit()">✅ Submit Exam</button>
+        </div>
+    </div>
+</div>
+
+<!-- Success Modal -->
+<div id="successModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            🎉 Exam Submitted Successfully!
+        </div>
+        <div class="modal-body">
+            <p>Thank you for completing the examination. Your responses have been recorded successfully.</p>
+            <div class="modal-summary">
+                <div class="summary-item">
+                    <span>📝 Total Questions:</span>
+                    <span id="finalTotal">0</span>
+                </div>
+                <div class="summary-item">
+                    <span>✅ Attempted:</span>
+                    <span id="finalAttempted">0</span>
+                </div>
+                <div class="summary-item">
+                    <span>⏰ Time Taken:</span>
+                    <span id="timeTaken">00:00</span>
+                </div>
+            </div>
+            <p>Your results will be available soon. Good luck! 🍀</p>
+        </div>
+        <div class="modal-buttons">
+            <button class="modal-btn confirm-btn" onclick="closeSuccessModal()">🏠 Back to Home</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        { q: "What is the capital of France?", options: ["Paris", "London", "Berlin", "Rome"], answer: null, status: "not-visited" },
+        { q: "What is 2 + 2?", options: ["3", "4", "5", "6"], answer: null, status: "not-visited" },
+        { q: "The sun rises from which direction?", options: ["North", "East", "West", "South"], answer: null, status: "not-visited" },
+        { q: "Which planet is known as the Red Planet?", options: ["Venus", "Mars", "Jupiter", "Saturn"], answer: null, status: "not-visited" },
+        { q: "What is the largest ocean on Earth?", options: ["Atlantic", "Indian", "Arctic", "Pacific"], answer: null, status: "not-visited" }
+    ];
+
+    let currentQuestion = 0;
+    let timerSeconds = 1800; // 30 minutes
+    let startTime = Date.now();
+
+    function loadQuestion(index) {
+        const q = questions[index];
+        document.getElementById("question-number").innerHTML = `📝 Question ${index + 1} of ${questions.length}`;
+        document.getElementById("question-text").innerText = q.q;
+        document.getElementById("options").innerHTML = q.options.map((opt, i) =>
+            `<label>
+                <input type="radio" name="option" value="${opt}" ${q.answer === opt ? "checked" : ""} onchange="selectAnswer(${index}, '${opt}')"> ${opt}
+            </label>`
+        ).join("");
+        
+        // Mark as visited if not already answered or marked
+        if (questions[index].status === "not-visited") {
+            questions[index].status = "visited";
+        }
+        
+        updatePalette();
+        updateAttempts();
+    }
+
+    function selectAnswer(qIndex, answer) {
+        questions[qIndex].answer = answer;
+        questions[qIndex].status = "answered";
+        updatePalette();
+        updateAttempts();
+    }
+
+    function nextQuestion() {
+        if (currentQuestion < questions.length - 1) {
+            currentQuestion++;
+            loadQuestion(currentQuestion);
+        }
+    }
+
+    function prevQuestion() {
+        if (currentQuestion > 0) {
+            currentQuestion--;
+            loadQuestion(currentQuestion);
+        }
+    }
+
+    function markForReview() {
+        questions[currentQuestion].status = "marked";
+        updatePalette();
+    }
+
+    function updatePalette() {
+        const palette = document.getElementById("question-palette");
+        palette.innerHTML = "";
+        questions.forEach((q, i) => {
+            let btnClass = q.status;
+            palette.innerHTML += `<button class="q-btn ${btnClass}" onclick="goToQuestion(${i})" title="Question ${i + 1} - ${q.status.replace('-', ' ')}">${i + 1}</button>`;
+        });
+    }
+
+    function goToQuestion(index) {
+        currentQuestion = index;
+        loadQuestion(index);
+    }
+
+    function updateAttempts() {
+        const attempted = questions.filter(q => q.answer !== null).length;
+        document.getElementById("attempt-info").innerHTML = `Attempted: ${attempted} / <span id="total-q">${questions.length}</span>`;
+        document.getElementById("total-q").textContent = questions.length;
+    }
+
+    function startTimer() {
+        const timerDisplay = document.getElementById("timer");
+        const interval = setInterval(() => {
+            if (timerSeconds <= 0) {
+                clearInterval(interval);
+                alert("⏰ Time is up! Your exam will be submitted automatically.");
+                submitExam();
+                return;
+            }
+            timerSeconds--;
+            const min = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
+            const sec = String(timerSeconds % 60).padStart(2, '0');
+            timerDisplay.innerHTML = `⏱️ ${min}:${sec}`;
+            
+            // Change timer color when less than 5 minutes
+            if (timerSeconds < 300) {
+                timerDisplay.style.color = '#dc3545';
+                timerDisplay.style.borderColor = '#dc3545';
+            }
+        }, 1000);
+    }
+
+    function submitExam() {
+        const attempted = questions.filter(q => q.answer !== null).length;
+        const unattempted = questions.length - attempted;
+        
+        // Populate exam summary
+        document.getElementById("examSummary").innerHTML = `
+            <div class="summary-item">
+                <span>📝 Total Questions:</span>
+                <span>${questions.length}</span>
+            </div>
+            <div class="summary-item">
+                <span>✅ Attempted:</span>
+                <span>${attempted}</span>
+            </div>
+            <div class="summary-item">
+                <span>❌ Unattempted:</span>
+                <span>${unattempted}</span>
+            </div>
+            <div class="summary-item">
+                <span>🔖 Marked for Review:</span>
+                <span>${questions.filter(q => q.status === 'marked').length}</span>
+            </div>
+        `;
+        
+        // Show submission modal
+        document.getElementById("submitModal").style.display = "block";
+    }
+
+    function closeSubmitModal() {
+        document.getElementById("submitModal").style.display = "none";
+    }
+
+    function confirmSubmit() {
+        // Hide submit modal
+        document.getElementById("submitModal").style.display = "none";
+        
+        // Calculate time taken using startTime
+        const endTime = Date.now();
+        const timeUsed = Math.floor((endTime - startTime) / 1000); // Time in seconds
+        const minutesUsed = Math.floor(timeUsed / 60);
+        const secondsUsed = timeUsed % 60;
+        const timeTakenFormatted = `${String(minutesUsed).padStart(2, '0')}:${String(secondsUsed).padStart(2, '0')}`;
+        
+        // Populate success modal
+        const attempted = questions.filter(q => q.answer !== null).length;
+        document.getElementById("finalTotal").textContent = questions.length;
+        document.getElementById("finalAttempted").textContent = attempted;
+        document.getElementById("timeTaken").textContent = timeTakenFormatted;
+        
+        // Show success modal
+        document.getElementById("successModal").style.display = "block";
+        
+        // Log results (in real application, send to server)
+        console.log("Exam Results:", questions);
+        console.log("Time taken:", timeTakenFormatted);
+    }
+
+    function closeSuccessModal() {
+        document.getElementById("successModal").style.display = "none";
+        // In real application, redirect to home page
+        alert("Redirecting to home page...");
+    }
+
+    // Close modal when clicking outside of it
+    window.onclick = function(event) {
+        const submitModal = document.getElementById("submitModal");
+        const successModal = document.getElementById("successModal");
+        
+        if (event.target == submitModal) {
+            closeSubmitModal();
+        }
+        if (event.target == successModal) {
+            closeSuccessModal();
+        }
+    }
+
+    // Initialize
+    document.getElementById("total-q").textContent = questions.length;
+    loadQuestion(currentQuestion);
+    startTimer();
+
+    // Prevent accidental page refresh
+    window.addEventListener('beforeunload', function (e) {
+        e.preventDefault();
+        e.returnValue = '';
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exam Admin Dashboard</title>
+<style>
+    body {
+        font-family: "Segoe UI", sans-serif;
+        background: #f4f6f9;
+        margin: 0;
+    }
+    header {
+        background: #007bff;
+        color: white;
+        padding: 15px;
+        font-size: 20px;
+        font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+    }
+    .container {
+        padding: 20px;
+        max-width: 1100px;
+        margin: auto;
+    }
+    h2 {
+        color: #333;
+        margin-bottom: 10px;
+    }
+    .input-group {
+        margin-bottom: 10px;
+    }
+    label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+    }
+    input[type="text"], input[type="number"], textarea {
+        width: 100%;
+        padding: 10px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+    }
+    button {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+        margin-right: 5px;
+    }
+    .btn-primary { background: #007bff; color: white; }
+    .btn-danger { background: #dc3545; color: white; }
+    .btn-secondary { background: #6c757d; color: white; }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        margin-top: 20px;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: left;
+    }
+    th {
+        background: #007bff;
+        color: white;
+    }
+    .action-btns button {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+    .stats {
+        display: flex;
+        gap: 15px;
+        margin-top: 20px;
+    }
+    .stat-box {
+        flex: 1;
+        background: white;
+        padding: 15px;
+        border-radius: 6px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+</style>
+</head>
+<body>
+
+<header>
+    Admin Dashboard - Online Exam
+    <button onclick="previewExam()" class="btn-secondary">Preview Exam</button>
+</header>
+
+<div class="container">
+    <h2>Exam Settings</h2>
+    <div class="input-group">
+        <label>Exam Title</label>
+        <input type="text" id="examTitle" placeholder="Enter exam title">
+    </div>
+    <div class="input-group">
+        <label>Total Time (minutes)</label>
+        <input type="number" id="examTime" placeholder="Enter total time">
+    </div>
+
+    <h2>Add Question</h2>
+    <div class="input-group">
+        <label>Question</label>
+        <textarea id="questionText" placeholder="Enter question text"></textarea>
+    </div>
+    <div class="input-group">
+        <label>Options (comma separated)</label>
+        <input type="text" id="questionOptions" placeholder="e.g. Option1, Option2, Option3, Option4">
+    </div>
+    <div class="input-group">
+        <label>Correct Answer</label>
+        <input type="text" id="correctAnswer" placeholder="Enter correct answer">
+    </div>
+    <button class="btn-primary" onclick="addQuestion()">Add Question</button>
+
+    <h2>Questions List</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Question</th>
+                <th>Options</th>
+                <th>Correct</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="questionTable"></tbody>
+    </table>
+
+    <h2>Statistics</h2>
+    <div class="stats">
+        <div class="stat-box" id="totalQuestions">Total Questions: 0</div>
+        <div class="stat-box" id="examDuration">Total Time: 0 mins</div>
+    </div>
+</div>
+
+<script>
+    let questions = JSON.parse(localStorage.getItem("examQuestions")) || [];
+
+    function addQuestion() {
+        const text = document.getElementById("questionText").value.trim();
+        const options = document.getElementById("questionOptions").value.split(",").map(o => o.trim());
+        const correct = document.getElementById("correctAnswer").value.trim();
+        const title = document.getElementById("examTitle").value.trim();
+        const time = parseInt(document.getElementById("examTime").value);
+
+        if (!text || options.length < 2 || !correct) {
+            alert("Please fill all fields correctly.");
+            return;
+        }
+
+        localStorage.setItem("examTitle", title);
+        localStorage.setItem("examTime", time);
+
+        questions.push({ q: text, options, correct });
+        localStorage.setItem("examQuestions", JSON.stringify(questions));
+
+        document.getElementById("questionText").value = "";
+        document.getElementById("questionOptions").value = "";
+        document.getElementById("correctAnswer").value = "";
+
+        renderQuestions();
+    }
+
+    function renderQuestions() {
+        const table = document.getElementById("questionTable");
+        table.innerHTML = "";
+        questions.forEach((q, i) => {
+            table.innerHTML += `
+                <tr>
+                    <td>${i + 1}</td>
+                    <td>${q.q}</td>
+                    <td>${q.options.join(", ")}</td>
+                    <td>${q.correct}</td>
+                    <td class="action-btns">
+                        <button class="btn-secondary" onclick="editQuestion(${i})">Edit</button>
+                        <button class="btn-danger" onclick="deleteQuestion(${i})">Delete</button>
+                    </td>
+                </tr>
+            `;
+        });
+        document.getElementById("totalQuestions").innerText = "Total Questions: " + questions.length;
+        document.getElementById("examDuration").innerText = "Total Time: " + (localStorage.getItem("examTime") || 0) + " mins";
+    }
+
+    function deleteQuestion(index) {
+        if (confirm("Delete this question?")) {
+            questions.splice(index, 1);
+            localStorage.setItem("examQuestions", JSON.stringify(questions));
+            renderQuestions();
+        }
+    }
+
+    function editQuestion(index) {
+        const q = questions[index];
+        document.getElementById("questionText").value = q.q;
+        document.getElementById("questionOptions").value = q.options.join(", ");
+        document.getElementById("correctAnswer").value = q.correct;
+        deleteQuestion(index);
+    }
+
+    function previewExam() {
+        window.open("exam.html", "_blank");
+    }
+
+    renderQuestions();
+</script>
+
+</body>
+</html>

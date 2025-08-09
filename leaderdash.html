@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Leader Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            background-color: #f8fafc;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background: linear-gradient(180deg, #1e3a8a 0%, #1e40af 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            padding-top: 30px;
+            position: fixed;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: clamp(18px, 4vw, 24px);
+            letter-spacing: 1px;
+        }
+
+        .sidebar a {
+            padding: 15px 25px;
+            text-decoration: none;
+            color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            margin: 5px 15px;
+            border-radius: 8px;
+            font-size: clamp(14px, 3vw, 16px);
+        }
+
+        .sidebar a:hover {
+            background-color: rgba(37, 99, 235, 0.8);
+            transform: translateX(5px);
+            color: white;
+        }
+
+        /* Main content */
+        .main {
+            margin-left: 250px;
+            padding: 30px;
+            flex: 1;
+            background-color: #f8fafc;
+            width: 100%;
+        }
+
+        .card {
+            background: white;
+            padding: clamp(15px, 4vw, 25px);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h2 {
+            color: #1e3a8a;
+            margin-bottom: 20px;
+            font-size: clamp(18px, 4vw, 24px);
+        }
+
+        .card p {
+            color: #64748b;
+            line-height: 1.6;
+            font-size: clamp(14px, 3vw, 16px);
+        }
+
+        .progress-bar {
+            height: 25px;
+            background-color: #f1f5f9;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 15px 0;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2563eb 0%, #3b82f6 100%);
+            text-align: center;
+            color: white;
+            font-size: clamp(12px, 2.5vw, 14px);
+            line-height: 25px;
+            font-weight: 500;
+            transition: width 0.5s ease-in-out;
+        }
+
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+            background: #1e3a8a;
+            border: none;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 200px;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 20px;
+                width: 100%;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .card {
+                margin-top: 60px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sidebar {
+                width: 180px;
+            }
+
+            .card {
+                padding: 15px;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <h2>🎓 Dashboard</h2>
+        <a href="index.html" onclick="loadContent('home')"><span>🏠</span> Home</a>
+        <a href="#" onclick="loadContent('profile')"><span>👤</span> Profile</a>
+        <a href="#" onclick="loadContent('score')"><span>📊</span> Score</a>
+        <a href="#" onclick="logout()"><span>🚪</span> Logout</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main" id="main-content">
+        <!-- Default content will load here -->
+    </div>
+
+    <script>
+        const studentData = {
+            name: "John Doe",
+            class: "10th Grade - Science",
+            email: "john.doe@student.com",
+            scores: {
+                "Week 1": 85,
+                "Week 2": 90,
+                "Week 3": 78,
+                "Week 4": 88
+            }
+        };
+
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        function loadContent(page) {
+            const content = document.getElementById('main-content');
+            if (page === 'home') {
+                content.innerHTML = `
+                    <div class="card">
+                        <h2>Welcome back, ${studentData.name}! 👋</h2>
+                        <p>Ready to continue your learning journey? Track your progress and achievements right here.</p>
+                    </div>
+                    <div class="card">
+                        <h3 style="color: #1e3a8a; margin-bottom: 15px;">Overall Progress</h3>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 85%;">85%</div>
+                        </div>
+                        <p style="text-align: center; margin-top: 10px; color: #64748b;">Keep going! You're doing great!</p>
+                    </div>
+                `;
+            } else if (page === 'profile') {
+                content.innerHTML = `
+                    <div class="card">
+                        <h2>Profile Information</h2>
+                        <div style="background: #f8fafc; padding: 20px; border-radius: 10px; margin-top: 15px; position: relative;">
+                            <div style="position: absolute; top: 20px; right: 20px;">
+                                <button onclick="toggleEditMode()" style="background: #2563eb; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; transition: all 0.3s ease;">
+                                    <span id="editButtonText">Edit Profile</span>
+                                </button>
+                            </div>
+                            <div id="profileDisplay">
+                                <p style="margin: 10px 0; display: flex; align-items: center;">
+                                    <span style="width: 30px; text-align: center;">👤</span>
+                                    <b style="color: #1e3a8a; min-width: 80px;">Name:</b> 
+                                    <span id="nameDisplay">${studentData.name}</span>
+                                </p>
+                                <p style="margin: 10px 0; display: flex; align-items: center;">
+                                    <span style="width: 30px; text-align: center;">🎓</span>
+                                    <b style="color: #1e3a8a; min-width: 80px;">Class:</b> 
+                                    <span id="classDisplay">${studentData.class}</span>
+                                </p>
+                                <p style="margin: 10px 0; display: flex; align-items: center;">
+                                    <span style="width: 30px; text-align: center;">📧</span>
+                                    <b style="color: #1e3a8a; min-width: 80px;">Email:</b> 
+                                    <span id="emailDisplay">${studentData.email}</span>
+                                </p>
+                            </div>
+                            <div id="profileEdit" style="display: none;">
+                                <p style="margin: 10px 0;">
+                                    <b style="color: #1e3a8a;">Name:</b>
+                                    <input type="text" id="nameInput" value="${studentData.name}" 
+                                        style="margin-left: 10px; padding: 5px; border: 1px solid #cbd5e1; border-radius: 5px; width: 60%;">
+                                </p>
+                                <p style="margin: 10px 0;">
+                                    <b style="color: #1e3a8a;">Class:</b>
+                                    <input type="text" id="classInput" value="${studentData.class}" 
+                                        style="margin-left: 10px; padding: 5px; border: 1px solid #cbd5e1; border-radius: 5px; width: 60%;">
+                                </p>
+                                <p style="margin: 10px 0;">
+                                    <b style="color: #1e3a8a;">Email:</b>
+                                    <input type="email" id="emailInput" value="${studentData.email}" 
+                                        style="margin-left: 10px; padding: 5px; border: 1px solid #cbd5e1; border-radius: 5px; width: 60%;">
+                                </p>
+                                <div style="margin-top: 20px; text-align: right;">
+                                    <button onclick="saveProfile()" style="background: #2563eb; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; margin-right: 10px;">
+                                        Save Changes
+                                    </button>
+                                    <button onclick="toggleEditMode()" style="background: #dc2626; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Add these functions for edit functionality
+                window.toggleEditMode = function() {
+                    const displayDiv = document.getElementById('profileDisplay');
+                    const editDiv = document.getElementById('profileEdit');
+                    const editButton = document.getElementById('editButtonText');
+                    
+                    if (displayDiv.style.display !== 'none') {
+                        displayDiv.style.display = 'none';
+                        editDiv.style.display = 'block';
+                        editButton.textContent = 'Cancel Edit';
+                    } else {
+                        displayDiv.style.display = 'block';
+                        editDiv.style.display = 'none';
+                        editButton.textContent = 'Edit Profile';
+                    }
+                };
+
+                window.saveProfile = function() {
+                    studentData.name = document.getElementById('nameInput').value;
+                    studentData.class = document.getElementById('classInput').value;
+                    studentData.email = document.getElementById('emailInput').value;
+                    loadContent('profile');
+                };
+            } else if (page === 'score') {
+                content.innerHTML = `
+                    <div class="card">
+                        <h2>Academic Performance</h2>
+                        ${Object.entries(studentData.scores).map(([subject, score]) => `
+                            <div style="margin: 20px 0;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <p style="color: #1e3a8a; font-weight: 500;">${subject}</p>
+                                    <p style="color: #64748b;">${score}%</p>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width:${score}%;">${score}%</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            // Close sidebar on mobile after content load
+            if (window.innerWidth <= 768) {
+                document.getElementById('sidebar').classList.remove('active');
+            }
+        }
+
+        function logout() {
+            if(confirm("Are you sure you want to logout?")) {
+                window.location.href = "login.html";
+            }
+        }
+
+        // Load home by default
+        loadContent('home');
+    </script>
+</body>
+</html>
