@@ -876,6 +876,8 @@
             <div class="form-footer">
                
                 <a href="#" onclick="toggleForgotPassword()" class="forgot-password">Forgot Password?</a>
+                <a href="#" onclick="toggleRegister()" class="forgot-password">Create Account</a>
+
             </div>
             <button type="submit" class="login-btn">
                 <span>Login</span>
@@ -908,6 +910,60 @@
         <button class="close-btn" onclick="toggleForgotPassword()">×</button>
     </div>
 </div>
+<!-- Registration Form -->
+<div id="registerForm" class="login-form">
+    <div class="login-form-content">
+        <h2>Register</h2>
+        <p class="login-subtitle">Create your account</p>
+        <form onsubmit="handleRegister(event)">
+            <div class="input-group">
+                <i class="fas fa-user"></i>
+                <input type="text" id="regName" placeholder="Full Name" required>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-school"></i>
+                <input type="text" id="regSchool" placeholder="School Name" required>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-layer-group"></i>
+                <select id="regSection" required onchange="updateClasses()">
+                    <option value="">Select Section</option>
+                    <option value="lp">LP</option>
+                    <option value="up">UP</option>
+                    <option value="hs">HS</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-chalkboard"></i>
+                <select id="regClass" required>
+                    <option value="">Select Class</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="regEmail" placeholder="Email" required>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="regPassword" placeholder="Password" required>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="regConfirmPassword" placeholder="Confirm Password" required>
+            </div>
+            <button type="submit" class="login-btn">
+                <span>Register</span>
+                <i class="fas fa-user-plus"></i>
+            </button>
+            <button type="button" class="back-btn" onclick="toggleRegister()">
+                <i class="fas fa-arrow-left"></i>
+                <span>Back to Login</span>
+            </button>
+        </form>
+        <button class="close-btn" onclick="toggleRegister()">×</button>
+    </div>
+</div>
+
 
 <style>
     .login-form {
@@ -1066,6 +1122,23 @@
         background: #eee;
         transform: rotate(90deg);
     }
+    .login-form select {
+    width: 100%;
+    padding: 15px 15px 15px 45px;
+    border: 2px solid #eee;
+    border-radius: 10px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    appearance: none;
+    background-color: white;
+}
+
+.login-form select:focus {
+    border-color: #4a6cf7;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.1);
+}
+
 </style>
 
 <script>
@@ -1084,17 +1157,32 @@
     }
 
     function handleLogin(event) {
-        event.preventDefault();
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        const remember = document.getElementById('remember').checked;
-        
-        // Add your login logic here
-        console.log('Login attempt:', { email, password, remember });
-        
-        // Close the form after submission
-        toggleLoginForm();
-    }
+    event.preventDefault();
+
+    const formData = new FormData();
+    formData.append("email", document.getElementById('email').value);
+    formData.append("password", document.getElementById('password').value);
+
+    fetch("login.php", {
+        method: "POST",
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === "success") {
+            alert("✅ " + data.message);
+            toggleLoginForm(); // Close login modal
+            // Optional: redirect to dashboard
+            window.location.href = "dashboard.php";
+        } else {
+            alert("❌ " + data.message);
+        }
+    })
+    .catch(err => {
+        console.error("Error:", err);
+        alert("⚠️ Something went wrong. Please try again.");
+    });
+}
 
     function handleForgotPassword(event) {
         event.preventDefault();
@@ -1109,6 +1197,69 @@
         // Close the form after submission
         toggleForgotPassword();
     }
+    function toggleRegister() {
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    loginForm.classList.toggle('active');
+    registerForm.classList.toggle('active');
+}
+
+function updateClasses() {
+    const section = document.getElementById("regSection").value;
+    const classDropdown = document.getElementById("regClass");
+    classDropdown.innerHTML = "<option value=''>Select Class</option>"; // reset
+
+    let classes = [];
+
+    if (section === "lp") {
+        classes = [1, 2, 3, 4];
+    } else if (section === "up") {
+        classes = [5, 6, 7];
+    } else if (section === "hs") {
+        classes = [8, 9, 10, 11, 12];
+    }
+
+    classes.forEach(cls => {
+        const option = document.createElement("option");
+        option.value = cls;
+        option.textContent = "Class " + cls;
+        classDropdown.appendChild(option);
+    });
+}
+
+function handleRegister(event) {
+    event.preventDefault();
+
+    const formData = new FormData();
+    formData.append("name", document.getElementById('regName').value);
+    formData.append("school", document.getElementById('regSchool').value);
+    formData.append("section", document.getElementById('regSection').value);
+    formData.append("class", document.getElementById('regClass').value);
+    formData.append("email", document.getElementById('regEmail').value);
+    formData.append("password", document.getElementById('regPassword').value);
+    formData.append("confirmPassword", document.getElementById('regConfirmPassword').value);
+
+    fetch("register.php", {
+        method: "POST",
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === "success") {
+            alert("✅ " + data.message);
+            toggleRegister(); // Close registration modal
+        } else {
+            alert("❌ " + data.message);
+        }
+    })
+    .catch(err => {
+        console.error("Error:", err);
+        alert("⚠️ Something went wrong. Please try again.");
+    });
+}
+
+
+
 </script>
     <!-- Rest of your existing HTML... -->
 
