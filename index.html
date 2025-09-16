@@ -1155,8 +1155,7 @@
         loginForm.classList.toggle('active');
         forgotForm.classList.toggle('active');
     }
-
-    function handleLogin(event) {
+function handleLogin(event) {
     event.preventDefault();
 
     const formData = new FormData();
@@ -1171,9 +1170,15 @@
     .then(data => {
         if (data.status === "success") {
             alert("✅ " + data.message);
-            toggleLoginForm(); // Close login modal
-            // Optional: redirect to dashboard
-            window.location.href = "dashboard.php";
+            toggleLoginForm(); 
+
+            if (data.role === "super_admin") {
+                window.location.href = "super_admin.php";
+            } else if (data.role === "admin") {
+                window.location.href = "admin_dashboard.php";
+            } else {
+                window.location.href = "dashboard.php";
+            }
         } else {
             alert("❌ " + data.message);
         }
@@ -1183,6 +1188,9 @@
         alert("⚠️ Something went wrong. Please try again.");
     });
 }
+
+
+
 
     function handleForgotPassword(event) {
         event.preventDefault();

@@ -1,4 +1,12 @@
 <!-- dashboard.html (Main Dashboard - Manage Users) -->
+<?php
+session_start();
+if (!isset($_SESSION['admin_id'])) {
+    header("Location: index.html"); // redirect to login page
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -225,15 +233,17 @@
 <body>
     <header class="header">
         <h1><i class="fas fa-dashboard"></i> Admin Dashboard</h1>
-        <button class="logout-btn" onclick="alert('Logged out')"><i class="fas fa-sign-out-alt"></i> Logout</button>
+         <button class="logout-btn" onclick="window.location.href='logout.php';">
+  <i class="fas fa-sign-out-alt"></i> Logout
+</button>
     </header>
     
     <div class="dashboard">
         <nav class="sidebar">
             <ul>
-                <li><a href="dashboard.html" class="active"><i class="fas fa-users"></i> Manage Users</a></li>
-                <li><a href="events.html"><i class="fas fa-calendar-alt"></i> Manage Events</a></li>
-                <li><a href="questions.html"><i class="fas fa-question-circle"></i> Manage Questions</a></li>
+                <li><a href="admin_dashboard.php" class="active"><i class="fas fa-users"></i> Manage Users</a></li>
+                <li><a href="events.php"><i class="fas fa-calendar-alt"></i> Manage Events</a></li>
+                <li><a href="questions.php"><i class="fas fa-question-circle"></i> Manage Questions</a></li>
                 <li><a href="analytics.html"><i class="fas fa-chart-bar"></i> View Analytics</a></li>
                 <li><a href="profile.html"><i class="fas fa-user-edit"></i> Edit Profile</a></li>
             </ul>
