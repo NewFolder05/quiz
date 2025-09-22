@@ -9,7 +9,7 @@ $media_url = trim($_POST['media_url'] ?? '');
 $correct_option = intval($_POST['correct_option'] ?? 0);
 $options = $_POST['options'] ?? [];
 
-if ($exam_id <= 0 || !in_array($q_type, ['mcq','truefalse','short','audio','video','image']) || $question_text === '') {
+if ($exam_id <= 0 || !in_array($q_type, ['mcq','truefalse','audio','video','image']) || $question_text === '') {
     echo json_encode(["status"=>"error","message"=>"Invalid input"]);
     exit;
 }
@@ -21,8 +21,8 @@ $stmt->bind_param("isssii", $exam_id, $q_type, $question_text, $media_url, $corr
 if ($stmt->execute()) {
     $qid = $stmt->insert_id;
 
-    // Only for MCQ/audio/video/image and short answer -> insert options
-    if (in_array($q_type, ['mcq','audio','video','image']) && is_array($options)) {
+    // This block now correctly handles all question types that need options
+    if (in_array($q_type, ['mcq', 'truefalse', 'audio', 'video', 'image']) && is_array($options)) {
         $optStmt = $conn->prepare("INSERT INTO question_options (question_id,option_index,option_text) VALUES (?,?,?)");
         foreach ($options as $i => $opt) {
             $idx = $i + 1;

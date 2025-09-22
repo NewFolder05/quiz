@@ -335,8 +335,9 @@ if (!isset($_SESSION['admin_id'])) {
   <button type="submit" class="submit-btn">Create Event</button>
 </form>
 
+
 <table>
-<thead><tr><th>Name</th><th>Date</th><th>Section</th><th>Classes</th><th>Actions</th></tr></thead>
+<thead><tr><th>Name</th><th>Unique Code</th><th>Date</th><th>Section</th><th>Classes</th><th>Actions</th></tr></thead>
 <tbody></tbody>
 </table>
 
@@ -352,8 +353,10 @@ document.getElementById('create-event-form').addEventListener('submit', async e=
  fd.append('class_to',document.getElementById('class-to').value);
  const res=await fetch('create_event.php',{method:'POST',body:fd});
  const data=await res.json();
- if(data.status==='success'){ alert('Event created'); loadEvents(); }
- else alert(data.message);
+ if(data.status==='success'){
+    alert('Event created with code: ' + data.unique_code); 
+    loadEvents();
+ } else alert(data.message);
 });
 
 async function loadEvents(){
@@ -363,11 +366,24 @@ async function loadEvents(){
   if(data.status==='success'){
     data.events.forEach(ev=>{
       const tr=document.createElement('tr');
-      tr.innerHTML=`<td>${ev.name}</td><td>${ev.start_date} &rarr; ${ev.end_date}</td><td>${ev.section}</td><td>${ev.class_from}-${ev.class_to}</td>
-      <td><button onclick="openExams(${ev.id})">Manage Exams</button></td>`;
+      tr.innerHTML=`<td>${ev.name}</td>
+        <td><strong>${ev.unique_code}</strong> <button onclick="copyCode('${ev.unique_code}')" class="copy-btn"><i class="fas fa-copy"></i></button></td>
+        <td>${ev.start_date} &rarr; ${ev.end_date}</td>
+        <td>${ev.section}</td>
+        <td>${ev.class_from}-${ev.class_to}</td>
+        <td><button onclick="openExams(${ev.id})">Manage Exams</button></td>`;
       tb.appendChild(tr);
     });
   }
+}
+
+function copyCode(code){
+  navigator.clipboard.writeText(code).then(()=>{
+    alert('Code copied to clipboard: ' + code);
+  }).catch(err => {
+    console.error('Failed to copy code: ', err);
+    alert('Failed to copy code.');
+  });
 }
 
 function openExams(eventId){

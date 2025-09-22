@@ -1,8 +1,7 @@
-<!-- dashboard.html (Main Dashboard - Manage Users) -->
 <?php
 session_start();
 if (!isset($_SESSION['admin_id'])) {
-    header("Location: index.html"); // redirect to login page
+    header("Location: index.html");
     exit;
 }
 ?>
@@ -12,9 +11,10 @@ if (!isset($_SESSION['admin_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Manage Users</title>
+    <title>Admin Dashboard - Leaderboards</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* (Your existing CSS here) */
         * {
             margin: 0;
             padding: 0;
@@ -228,14 +228,76 @@ if (!isset($_SESSION['admin_id'])) {
                 padding: 20px;
             }
         }
+        .leaderboards-container {
+            display: grid;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .leaderboard-card {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+        .leaderboard-card h3 {
+            margin-bottom: 15px;
+            color: #4a6cf7;
+            font-size: 20px;
+        }
+        .exam-selection-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .event-exam-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .event-exam-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .event-exam-item button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #event-select {
+            padding: 12px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+            width: 250px;
+        }
+        #event-select:focus {
+            outline: none;
+            border-color: #4a6cf7;
+            box-shadow: 0 0 0 3px rgba(74,108,247,0.1);
+        }
+        .individual-exam-leaderboard {
+            margin-top: 20px;
+            border-top: 1px solid #e9ecef;
+            padding-top: 20px;
+        }
     </style>
 </head>
 <body>
     <header class="header">
         <h1><i class="fas fa-dashboard"></i> Admin Dashboard</h1>
-         <button class="logout-btn" onclick="window.location.href='logout.php';">
-  <i class="fas fa-sign-out-alt"></i> Logout
-</button>
+        <button class="logout-btn" onclick="window.location.href='logout.php';">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
     </header>
     
     <div class="dashboard">
@@ -243,80 +305,151 @@ if (!isset($_SESSION['admin_id'])) {
             <ul>
                 <li><a href="admin_dashboard.php" class="active"><i class="fas fa-users"></i> Manage Users</a></li>
                 <li><a href="events.php"><i class="fas fa-calendar-alt"></i> Manage Events</a></li>
-                <li><a href="questions.php"><i class="fas fa-question-circle"></i> Manage Questions</a></li>
                 <li><a href="analytics.html"><i class="fas fa-chart-bar"></i> View Analytics</a></li>
                 <li><a href="profile.html"><i class="fas fa-user-edit"></i> Edit Profile</a></li>
             </ul>
         </nav>
         
         <main class="main-content">
-            <h2>Manage Users</h2>
-            <div class="search-bar">
-                <input type="text" placeholder="Search users...">
-                <button><i class="fas fa-search"></i> Search</button>
+            <h2>Leaderboards</h2>
+            <div class="leaderboards-container">
+                <div class="leaderboard-card">
+                    <h3>Select an Event</h3>
+                    <div class="exam-selection-area">
+                        <select id="event-select">
+                            <option value="">-- Select Event --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="leaderboard-card hidden" id="event-leaderboard-card">
+                    <h3 id="event-leaderboard-title">Global Leaderboard</h3>
+                    <table class="leaderboard-table">
+                        <thead><tr><th>Rank</th><th>User</th><th>Total Score</th></tr></thead>
+                        <tbody id="event-leaderboard-body"></tbody>
+                    </table>
+                </div>
+
+                <div class="leaderboard-card hidden" id="exam-leaderboards-card">
+                    <h3 id="exam-leaderboards-title">Exams in this Event</h3>
+                    <div id="exam-leaderboard-list" class="event-exam-list"></div>
+                </div>
+                
+                <div id="individual-exam-details" class="hidden">
+                    </div>
             </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Username</th>
-                        <th>Email</th>
-                        <th>Status</th>
-                        <th>Joined Date</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>user1</td>
-                        <td>user1@example.com</td>
-                        <td>Active</td>
-                        <td>2024-01-15</td>
-                        <td>
-                            <button class="btn deactivate-btn" onclick="deactivateUser('user1')">Deactivate</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>user2</td>
-                        <td>user2@example.com</td>
-                        <td>Inactive</td>
-                        <td>2024-02-20</td>
-                        <td>
-                            <button class="btn activate-btn" onclick="activateUser('user2')">Activate</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>user3</td>
-                        <td>user3@example.com</td>
-                        <td>Active</td>
-                        <td>2024-03-10</td>
-                        <td>
-                            <button class="btn deactivate-btn" onclick="deactivateUser('user3')">Deactivate</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>user4</td>
-                        <td>user4@example.com</td>
-                        <td>Active</td>
-                        <td>2024-04-05</td>
-                        <td>
-                            <button class="btn deactivate-btn" onclick="deactivateUser('user4')">Deactivate</button>
-                        </td>
-                    </tr>
-                    <!-- Add more users -->
-                </tbody>
-            </table>
-            <button class="submit-btn" style="margin-top: 20px;"><i class="fas fa-plus"></i> Add New User</button>
         </main>
     </div>
 
     <script>
-        function activateUser(username) {
-            alert(`Activated user: ${username}`);
+        async function loadEventsForDropdown() {
+            try {
+                const res = await fetch('list_events.php');
+                const data = await res.json();
+                const select = document.getElementById('event-select');
+                if (data.status === 'success' && data.events.length > 0) {
+                    data.events.forEach(event => {
+                        const option = document.createElement('option');
+                        option.value = event.id;
+                        option.textContent = event.name;
+                        select.appendChild(option);
+                    });
+                }
+            } catch (err) {
+                console.error('Error loading events:', err);
+            }
+        }
+
+        async function loadLeaderboards(eventId) {
+            try {
+                const res = await fetch(`get_leaderboards.php?event_id=${eventId}`);
+                const data = await res.json();
+                const eventLeaderboardCard = document.getElementById('event-leaderboard-card');
+                const examLeaderboardsCard = document.getElementById('exam-leaderboards-card');
+                
+                if (data.status === 'success') {
+                    // Populate Event-based Leaderboard
+                    const globalTb = document.getElementById('event-leaderboard-body');
+                    globalTb.innerHTML = '';
+                    if (data.event_leaderboard.length > 0) {
+                        document.getElementById('event-leaderboard-title').textContent = `Leaderboard for Event: ${data.event_title}`;
+                        data.event_leaderboard.forEach((entry, index) => {
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `<td>${index + 1}</td><td>${entry.name}</td><td>${entry.total_score}</td>`;
+                            globalTb.appendChild(tr);
+                        });
+                        eventLeaderboardCard.classList.remove('hidden');
+                    } else {
+                        eventLeaderboardCard.classList.remove('hidden');
+                        document.getElementById('event-leaderboard-title').textContent = `Leaderboard for Event: ${data.event_title}`;
+                        globalTb.innerHTML = '<tr><td colspan="3" style="text-align:center;">No scores found for this event.</td></tr>';
+                    }
+
+                    // Populate Individual Exam Leaderboards
+                    const examListDiv = document.getElementById('exam-leaderboard-list');
+                    examListDiv.innerHTML = '';
+                    if (data.exam_leaderboards && Object.keys(data.exam_leaderboards).length > 0) {
+                        for (const examId in data.exam_leaderboards) {
+                            const leaderboard = data.exam_leaderboards[examId];
+                            const examTitle = leaderboard.exam_title;
+                            
+                            const examItem = document.createElement('div');
+                            examItem.className = 'event-exam-item';
+                            examItem.innerHTML = `<span>${examTitle}</span>`;
+                            const button = document.createElement('button');
+                            button.textContent = 'View Leaderboard';
+                            button.onclick = () => viewExamLeaderboard(examId, examTitle, leaderboard.scores);
+                            examItem.appendChild(button);
+                            examListDiv.appendChild(examItem);
+                        }
+                        examLeaderboardsCard.classList.remove('hidden');
+                    } else {
+                        examLeaderboardsCard.classList.remove('hidden');
+                        examListDiv.innerHTML = '<p>No exams with scores yet for this event.</p>';
+                    }
+                }
+            } catch (err) {
+                console.error('Error loading leaderboards:', err);
+                alert('Failed to load leaderboards.');
+            }
         }
         
-        function deactivateUser(username) {
-            alert(`Deactivated user: ${username}`);
+        function viewExamLeaderboard(examId, examTitle, scores) {
+            const individualLeaderboardDiv = document.getElementById('individual-exam-details');
+            individualLeaderboardDiv.innerHTML = ''; // Clear previous leaderboard
+            
+            let tableHtml = `
+                <div class="leaderboard-card exam-leaderboard-container">
+                    <h3>${examTitle} Leaderboard</h3>
+                    <table class="leaderboard-table">
+                        <thead><tr><th>Rank</th><th>User</th><th>Score</th></tr></thead>
+                        <tbody>
+            `;
+            if (scores.length > 0) {
+                scores.forEach((entry, index) => {
+                    tableHtml += `<tr><td>${index + 1}</td><td>${entry.name}</td><td>${entry.score}</td></tr>`;
+                });
+            } else {
+                tableHtml += '<tr><td colspan="3" style="text-align:center;">No scores yet.</td></tr>';
+            }
+            tableHtml += `</tbody></table></div>`;
+            
+            individualLeaderboardDiv.innerHTML = tableHtml;
+            individualLeaderboardDiv.classList.remove('hidden'); // Show the new leaderboard
         }
+
+        document.getElementById('event-select').addEventListener('change', (e) => {
+            const eventId = e.target.value;
+            if (eventId) {
+                loadLeaderboards(eventId);
+            } else {
+                document.getElementById('event-leaderboard-card').classList.add('hidden');
+                document.getElementById('exam-leaderboards-card').classList.add('hidden');
+                document.getElementById('individual-exam-details').classList.add('hidden'); // Hide exam details on new event select
+            }
+        });
+
+        loadEventsForDropdown();
     </script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['admin_id'])) {
-    header("Location: index.html"); // redirect to login page
+    header("Location: index.html");
     exit;
 }
 ?>
@@ -14,6 +14,7 @@ if (!isset($_SESSION['admin_id'])) {
     <title>Admin Dashboard - Manage Questions</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* (CSS code as previously provided) */
         * {
             margin: 0;
             padding: 0;
@@ -326,6 +327,30 @@ if (!isset($_SESSION['admin_id'])) {
         button.deactivate-btn:hover {
             background-color: #d32f2f;
         }
+        #questions-list {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e9ecef;
+        }
+        .question-card {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .question-card p {
+            font-weight: 600;
+            color: #4a6cf7;
+            margin-bottom: 10px;
+        }
+        .question-card ol {
+            list-style-type: decimal;
+            padding-left: 20px;
+        }
+        .question-card li {
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 <body>
@@ -340,8 +365,7 @@ if (!isset($_SESSION['admin_id'])) {
         <nav class="sidebar">
             <ul>
                 <li><a href="admin_dashboard.php"><i class="fas fa-users"></i> Manage Users</a></li>
-                <li><a href="events.php"><i class="fas fa-calendar-alt"></i> Manage Events</a></li>
-                <li><a href="questions.php" class="active"><i class="fas fa-question-circle"></i> Manage Questions</a></li>
+                <li><a href="events.php" class="active"><i class="fas fa-calendar-alt"></i> Manage Events</a></li>
                 <li><a href="analytics.html"><i class="fas fa-chart-bar"></i> View Analytics</a></li>
                 <li><a href="profile.html"><i class="fas fa-user-edit"></i> Edit Profile</a></li>
             </ul>
@@ -351,13 +375,13 @@ if (!isset($_SESSION['admin_id'])) {
             <h2>Manage Questions</h2>
             <form id="create-question-form">
                 <input type="hidden" id="exam-id">
+                <input type="hidden" id="question-id">
               
                 <div class="form-group">
                   <label for="q-type">Question Type:</label>
                   <select id="q-type" required>
                     <option value="mcq">MCQ</option>
                     <option value="truefalse">True/False</option>
-                    <option value="short">Short Answer</option>
                     <option value="audio">Audio Question</option>
                     <option value="video">Video Question</option>
                     <option value="image">Image Question</option>
@@ -411,78 +435,189 @@ if (!isset($_SESSION['admin_id'])) {
                         </select>
                     </div>
                 </div>
-
-                <div id="short-block" class="hidden">
-                    <div class="form-group">
-                        <label for="short-answer">Correct Answer:</label>
-                        <input type="text" id="short-answer">
-                    </div>
-                </div>
               
                 <button type="submit">Add Question</button>
             </form>
+
+            <div id="questions-list">
+                <h3>Added Questions</h3>
+            </div>
         </main>
     </div>
 
 <script>
-const params = new URLSearchParams(location.search);
-document.getElementById('exam-id').value = params.get('exam_id');
+document.addEventListener('DOMContentLoaded', () => {
+    const qTypeSelect = document.getElementById('q-type');
+    const optionsBlock = document.getElementById('options-block');
+    const truefalseBlock = document.getElementById('truefalse-block');
+    const createQuestionForm = document.getElementById('create-question-form');
+    const examIdInput = document.getElementById('exam-id');
+    const questionIdInput = document.getElementById('question-id');
+    const questionsListDiv = document.getElementById('questions-list');
+    const addQuestionButton = createQuestionForm.querySelector('button[type="submit"]');
 
-document.getElementById('q-type').addEventListener('change', e => {
-    // Hide all specific question type blocks first
-    document.getElementById('options-block').classList.add('hidden');
-    document.getElementById('truefalse-block').classList.add('hidden');
-    document.getElementById('short-block').classList.add('hidden');
+    // This is the key line that fixes the issue.
+    // It listens for changes to the dropdown and updates the form accordingly.
+    qTypeSelect.addEventListener('change', handleQuestionTypeChange);
 
-    const selectedType = e.target.value;
-    if (['mcq', 'audio', 'video', 'image'].includes(selectedType)) {
-        document.getElementById('options-block').classList.remove('hidden');
-    } else if (selectedType === 'truefalse') {
-        document.getElementById('truefalse-block').classList.remove('hidden');
-    } else if (selectedType === 'short') {
-        document.getElementById('short-block').classList.remove('hidden');
+    const params = new URLSearchParams(location.search);
+    const examId = params.get('exam_id');
+    if (examId) {
+        examIdInput.value = examId;
+    }
+
+    function handleQuestionTypeChange() {
+        const optionInputs = document.querySelectorAll('#options-block input');
+        const correctOptionSelect = document.getElementById('correct-option');
+        
+        // Always start by hiding both sections
+        optionsBlock.classList.add('hidden');
+        truefalseBlock.classList.add('hidden');
+        
+        // And disable the MCQ options to prevent them from being submitted
+        optionInputs.forEach(input => {
+            input.disabled = true;
+            input.required = false; // Prevents validation errors on hidden fields
+        });
+        if (correctOptionSelect) {
+            correctOptionSelect.disabled = true;
+        }
+
+        const selectedType = qTypeSelect.value;
+        
+        // Show the MCQ options block if the type matches
+        if (['mcq', 'audio', 'video', 'image'].includes(selectedType)) {
+            optionsBlock.classList.remove('hidden');
+            optionInputs.forEach(input => {
+                input.disabled = false;
+                input.required = true; // Make them required again when visible
+            });
+            if (correctOptionSelect) {
+                correctOptionSelect.disabled = false;
+            }
+        // Show the True/False block if that type is selected
+        } else if (selectedType === 'truefalse') {
+            truefalseBlock.classList.remove('hidden');
+        }
+    }
+
+    function loadQuestionForEdit(question) {
+        questionIdInput.value = question.id;
+        qTypeSelect.value = question.q_type;
+        document.getElementById('question-text').value = question.question_text;
+        document.getElementById('media-url').value = question.media_url || '';
+
+        if (['mcq', 'audio', 'video', 'image'].includes(question.q_type)) {
+            document.getElementById('opt1').value = question.options[0]?.option_text || '';
+            document.getElementById('opt2').value = question.options[1]?.option_text || '';
+            document.getElementById('opt3').value = question.options[2]?.option_text || '';
+            document.getElementById('opt4').value = question.options[3]?.option_text || '';
+            document.getElementById('correct-option').value = question.correct_option;
+        } else if (question.q_type === 'truefalse') {
+            document.getElementById('truefalse-option').value = question.correct_option;
+        }
+        addQuestionButton.textContent = 'Update Question';
+        handleQuestionTypeChange(); // Update the form view after loading data
+    }
+
+    async function loadQuestions() {
+        if (!examIdInput.value) {
+            questionsListDiv.innerHTML = '<p style="text-align:center;">Exam ID is missing. Please navigate from the Events page.</p>';
+            return;
+        }
+
+        const res = await fetch(`list_questions.php?exam_id=${examIdInput.value}`);
+        const data = await res.json();
+        
+        questionsListDiv.innerHTML = '<h3>Added Questions</h3>';
+        
+        if (data.status === 'success' && data.questions.length > 0) {
+            data.questions.forEach(q => {
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                let optionsHtml = '';
+                
+                if (['mcq', 'audio', 'video', 'image'].includes(q.q_type) && q.options) {
+                    optionsHtml = `<ol>${q.options.map(opt => `<li>${opt.option_text}</li>`).join('')}</ol>`;
+                } else if (q.q_type === 'truefalse') {
+                    optionsHtml = `<p>Correct Answer: <strong>${q.correct_option == 1 ? 'True' : 'False'}</strong></p>`;
+                }
+
+                const editButton = document.createElement('button');
+                editButton.textContent = 'Edit';
+                editButton.onclick = () => loadQuestionForEdit(q);
+
+                card.innerHTML = `<p><strong>Q:</strong> ${q.question_text}</p>
+                                  ${q.media_url ? `<p>Media: <a href="${q.media_url}" target="_blank">View Media</a></p>` : ''}
+                                  ${optionsHtml}`;
+                card.appendChild(editButton);
+                questionsListDiv.appendChild(card);
+            });
+        } else {
+            questionsListDiv.innerHTML += '<p style="text-align:center;">No questions added yet.</p>';
+        }
+    }
+
+    createQuestionForm.addEventListener('submit', async e => {
+        e.preventDefault();
+        const fd = new FormData();
+        const qType = qTypeSelect.value;
+        const questionId = questionIdInput.value;
+        
+        const questionText = document.getElementById('question-text').value.trim();
+        if (!examIdInput.value || questionText === '') {
+            alert('Error: Please ensure you have entered a question.');
+            return;
+        }
+        
+        fd.append('exam_id', examIdInput.value);
+        fd.append('q_type', qType);
+        fd.append('question_text', questionText);
+        fd.append('media_url', document.getElementById('media-url').value.trim());
+        if (questionId) {
+            fd.append('question_id', questionId);
+        }
+
+        if (['mcq', 'audio', 'video', 'image'].includes(qType)) {
+            fd.append('correct_option', document.getElementById('correct-option').value);
+            const opts = [
+                document.getElementById('opt1').value,
+                document.getElementById('opt2').value,
+                document.getElementById('opt3').value,
+                document.getElementById('opt4').value
+            ];
+            opts.forEach((o, i) => fd.append(`options[${i}]`, o.trim()));
+        } else if (qType === 'truefalse') {
+            fd.append('correct_option', document.getElementById('truefalse-option').value);
+        }
+        
+        const endpoint = questionId ? 'update_question.php' : 'create_question.php';
+
+        try {
+            const res = await fetch(endpoint, { method: 'POST', body: fd });
+            const data = await res.json();
+            if(data.status === 'success'){
+                alert("Question saved!");
+                createQuestionForm.reset();
+                questionIdInput.value = '';
+                addQuestionButton.textContent = 'Add Question';
+                handleQuestionTypeChange();
+                loadQuestions();
+            } else {
+                alert("Error: " + (data.message || 'Unknown error'));
+            }
+        } catch (err) {
+            console.error(err);
+            alert('A network or server error occurred. Please check the console for details.');
+        }
+    });
+
+    // Initial setup when the page loads
+    if (qTypeSelect) {
+        handleQuestionTypeChange();
+        loadQuestions();
     }
 });
-
-document.getElementById('create-question-form').addEventListener('submit', async e => {
-    e.preventDefault();
-    const fd = new FormData();
-    const qType = document.getElementById('q-type').value;
-
-    fd.append('exam_id', document.getElementById('exam-id').value);
-    fd.append('q_type', qType);
-    fd.append('question_text', document.getElementById('question-text').value);
-    fd.append('media_url', document.getElementById('media-url').value);
-
-    if (['mcq', 'audio', 'video', 'image'].includes(qType)) {
-        fd.append('correct_option', document.getElementById('correct-option').value);
-        const opts = [
-            document.getElementById('opt1').value,
-            document.getElementById('opt2').value,
-            document.getElementById('opt3').value,
-            document.getElementById('opt4').value
-        ];
-        opts.forEach((o, i) => fd.append(`options[${i}]`, o));
-    } else if (qType === 'truefalse') {
-        // The correct option for true/false will be '1' for true and '0' for false
-        fd.append('correct_option', document.getElementById('truefalse-option').value);
-    } else if (qType === 'short') {
-        // For short answer, we send the answer text itself in the options array
-        fd.append('options[]', document.getElementById('short-answer').value);
-    }
-
-    const res = await fetch('create_question.php', { method: 'POST', body: fd });
-    const data = await res.json();
-    if(data.status === 'success'){
-        alert("Question Added!");
-    } else {
-        alert("Error: " + data.message);
-    }
-});
-
-// Run the change event once on page load to set the initial state
-document.getElementById('q-type').dispatchEvent(new Event('change'));
 </script>
-
 </body>
 </html>
